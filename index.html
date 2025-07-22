@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="keywords" content="4D Scene Generation, 4D Scene Reconstruction">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pi3DET - ICCV 2025</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+
+  <link rel="icon" href="./static/images/pi3det.png" type="image/x-icon">
+
+
+  <style>
+    .a {
+      color: rgb(192,0,0);
+    }
+    .columns {
+      display: flex; justify-content: flex-start; padding: 5px; text-align: left;
+    }
+    .tag {
+      background-color: #f5f5f5; border-radius: 3px; padding: 5px; margin-right: 5px; font-size: 14px; color: #333;
+    }
+    .mp4-demo {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      object-fit: cover;
+      background: #000;
+      margin-bottom: 2px; /* reduce bottom spacing */
+    }
+    figcaption {
+      font-size: 0.9em;
+      margin-top: 2px; /* reduce top spacing of caption */
+      color: #444;
+    }
+  </style>
+
+  <link rel="icon" href="./static/images/favicon.ico" type="image/x-icon">
+
+
+  <style>
+    #backToTopBtn {
+      position: fixed; bottom: 20px; right: 50px; z-index: 999;
+      background-color: rgb(227, 104, 92); color: white; border: none;
+      border-radius: 50%; padding: 12px 16px;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.2); transition: opacity 0.3s; display: none;
+    }
+    #backToTopBtn:hover {
+      background-color: rgb(0, 176, 240);
+    }
+    @media (max-width: 768px) {
+      #backToTopBtn {
+        font-size: 18px;
+        padding: 10px 14px;
+      }
+    }
+    .img-hover-effect {
+      transition: transform 0.3s ease-in-out;
+    }
+    .img-hover-effect:hover {
+      transform: scale(1.05);
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .iframe-container {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      padding-top: 56.25%; /* 16:9 aspect ratio */
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .iframe-container .iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .click-and-move-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      text-align: center;
+      z-index: 1;
+      font-size: 1.2em;
+      padding: 0.5rem;
+    }
+
+    .inline-image {
+      height: 1.2em;
+      vertical-align: middle;
+    }
+  </style>
+
+</head>
+
+
+<!-- Navbar -->
+<nav class="navbar is-light is-fixed-top" role="navigation" aria-label="main navigation" style="background-color: #f8f8f8; z-index: 998;">
+  <div class="container is-max-desktop">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://pi3det.github.io/">
+        &nbsp;&nbsp;<img src="./static/images/pi3det.png" style="height: 37px; vertical-align: top" class="img-hover-effect">&nbsp;&nbsp;<strong>Pi3DET</strong>&nbsp;&nbsp;
+      </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasic">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarBasic" class="navbar-menu">
+      <div class="navbar-start">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="navbar-item" href="#overview"><i class="fa fa-eye"></i>&nbsp;&nbsp;Overview&nbsp;&nbsp;</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="navbar-item" href="#dataset"><i class="fa fa-podcast"></i>&nbsp;&nbsp;Dataset&nbsp;&nbsp;</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="navbar-item" href="#methodology"><i class="fa fa-th-large"></i>&nbsp;&nbsp;Methodology&nbsp;&nbsp;</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="navbar-item" href="#experiments"><i class="fa fa-street-view"></i>&nbsp;&nbsp;Experiments&nbsp;&nbsp;</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="navbar-item" href="#citation"><i class="fa fa-table"></i>&nbsp;&nbsp;Citation&nbsp;&nbsp;</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+
+<body>
+
+  <button onclick="scrollToTop()" id="backToTopBtn" title="Go to top">↑</button>
+  <script>
+    window.onscroll = function() {
+      scrollFunction();
+    };
+    function scrollFunction() {
+      const button = document.getElementById("backToTopBtn");
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        button.style.display = "block";
+      } else {
+        button.style.display = "none";
+      }
+    }
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+  
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">
+              </br>
+              <img src="./static/images/pi3det.gif" style="height: 160px; vertical-align: top" class="img-hover-effect">
+              </br>
+              Perspective-Invariant 3D Object Detection
+            </h1>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="" target="_blank"><strong>Ao Liang</strong></a><sup>1,2,*</sup>&nbsp;&nbsp;
+              </span>
+              <span class="author-block">
+                <a href="https://ldkong.com/" target="_blank"><strong>Lingdong Kong</strong></a><sup>1,*</sup>&nbsp;&nbsp;
+              </span>
+              <span class="author-block">
+                <a href="https://dylanorange.github.io/" target="_blank"><strong>Dongyue Lu</strong></a><sup>1,*</sup>&nbsp;&nbsp;
+              </span>
+              <span class="author-block">
+                <a href="" target="_blank"><strong>Youquan Liu</strong></a><sup>3</sup>&nbsp;&nbsp;
+              </span>
+              <span class="author-block">
+                <a href="" target="_blank"><strong>Jian Fang</strong></a><sup>2</sup>&nbsp;&nbsp;
+              </span>
+              <span class="author-block">
+                <a href="" target="_blank"><strong>Huaici Zhao</strong></a><sup>2</sup>&nbsp;&nbsp;
+              </span>
+              <span class="author-block">
+                <a href="https://www.comp.nus.edu.sg/cs/people/ooiwt/" target="_blank"><strong>Wei Tsang Ooi</strong></a><sup>1</sup>
+              </span>
+            </div>
+
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <img src="./static/images/logo_nus.png" style="height: 28px; vertical-align: middle">&nbsp;<sup>1</sup>National University of Singapore
+              </span>
+              <br>
+              <span class="author-block">
+                <img src="./static/images/logo_cas.png" style="height: 29px; vertical-align: top">&nbsp;<sup>2</sup>Shenyang Institute of Automation, Chinese Academy of Sciences
+              </span>
+              <br>
+              <span class="author-block">
+                <img src="./static/images/logo_fdu.png" style="height: 28px; vertical-align: top">&nbsp;<sup>3</sup>Fudan University
+              </span>
+            </div>
+
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="https://arxiv.org/pdf/2507." target="_blank" class="external-link button paper-btn">
+                    <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                    <span><b>Paper</b></span>
+                  </a>
+                </span>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="link-block">
+                  <a href="https://github.com/pi3det/toolkit" target="_blank" class="external-link button github-btn">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span><b>GitHub</b></span>
+                  </a>
+                </span>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <span class="link-block">
+                  <a href="https://huggingface.co/datasets/Pi3DET/data" target="_blank" class="external-link button dataset-btn">
+                    <span class="icon"><i class="fab fa-github"></i></span>
+                    <span><b>Dataset</b></span>
+                  </a>
+                </span>
+              </div>
+            </div>
+            <br>
+
+            <h4 class="title is-3 publication-title">
+              <img src="./static/images/logo_iccv2025.png" style="height: 105px; vertical-align: top">
+            </h4>
+
+          </div>
+        </div><hr>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section" style="margin-top: -100px;"></section>
+  <div class="container is-max-desktop">
+    <div class="columns is-centered">
+      <div class=" column is-full-width has-text-centered">
+      <img src="./static/images/teaser.png" />
+      <div class="content has-text-justified" style="padding-top: 10px">
+        <p>
+          Motivation of <b>P</b>erspective <b>i</b>nvariant <b>3</b>D object <b>DET</b>ection (<strong>Pi3DET</strong>). 
+          We focus on the practical yet challenging task of 3D object detection from heterogeneous robot platforms: 
+          <b>Vehicle</b>, <b>Drone</b>, and <b>Quadruped</b>. 
+          To achieve strong generalization, we contribute: 
+          <b>(1)</b> The first <b>dataset</b> for multi-platform 3D detection, comprising more than <b>51K</b> LiDAR frames with over <b>250K</b> meticulously annotated 3D bounding boxes; 
+          <b>(2)</b> An adaptation <b>framework</b>, effectively transferring capabilities from vehicles to other platforms by integrating geometric and feature-level representations; 
+          <b>(3)</b> A comprehensive <b>benchmark</b> study of state-of-the-art 3D detectors on cross-platform scenarios.
+        </p>
+      </div>
+      <hr>
+    </div>
+  </div>
+  </div>
+  </section> 
+  <br>
+
+
+
+  <section class="section" id="overview">
+    <div class="container is-max-desktop"><h2 class="title is-2 has-text-centered">Overview</h2>
+    
+      <div class="content has-text-justified" style="padding-top: 0px">
+        <p>
+          With the rise of robotics, LiDAR-based 3D object detection has garnered significant attention in both 
+          academia and industry. However, existing datasets and methods predominantly focus on vehicle-mounted 
+          platforms, leaving other autonomous platforms underexplored. To bridge this gap, we introduce 
+          Pi3DET, the first benchmark featuring LiDAR data and 3D bounding box annotations collected 
+          from multiple platforms: vehicle, quadruped, and drone, thereby facilitating research in 3D object 
+          detection for non-vehicle platforms as well as cross-platform 3D detection.
+          Based on Pi3DET, we propose a novel cross-platform adaptation framework that transfers knowledge 
+          from the well-studied vehicle platform to other platforms. This framework achieves perspective-invariant 
+          3D detection through robust alignment at both geometric and feature levels. Additionally, we establish 
+          a benchmark to evaluate the resilience and robustness of current 3D detectors in cross-platform scenarios, 
+          providing valuable insights for developing adaptive 3D perception systems. Extensive experiments validate 
+          the effectiveness of our approach on challenging cross-platform tasks, demonstrating substantial gains 
+          over existing adaptation methods. We hope this work paves the way for generalizable and unified 3D 
+          perception system across diverse and complex environments. Our Pi3DET dataset, cross-platform 
+          benchmark suite, and annotation toolkit have been made publicly available.
+        </p>
+      </div>
+      <hr>
+  </section>
+
+
+
+
+  <section class="section" id="dataset">
+    <div class="container is-max-desktop"><h2 class="title is-2 has-text-centered">Dataset</h2>
+
+      <div class="columns is-centered has-text-centered">
+        <div class="container is-max-desktop">
+          <p>
+            <strong>Summary of LiDAR-based 3D object detection datasets.</strong>
+          </p>
+          <p>
+            We compare key aspects from <sup>1</sup>robot platforms, <sup>2</sup>scale, <sup>3</sup>sensor setups, <sup>4</sup>temporal (Temp.), <sup>5</sup>multi-conditions, etc.
+            To our knowledge, <strong>Pi3DET</strong> stands out as the first work to feature multi-platform 3D detection from
+            <img src="./static/images/icons/vehicle.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Vehicle" />
+            <strong>Vehicle</strong>,
+            <img src="./static/images/icons/drone.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Drone" />
+            <strong>Drone</strong>, and
+            <img src="./static/images/icons/quadruped.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Quadruped" />
+            <strong>Quadruped</strong>, with fine-grained 3D bounding box annotations, conditions, and practical use cases.
+          </p>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+              <thead>
+                <tr>
+                  <th rowspan="2">Dataset</th>
+                  <th rowspan="2">Venue</th>
+                  <th colspan="3">Platform</th>
+                  <th rowspan="2"># of<br>Frames</th>
+                  <th rowspan="2">LiDAR<br>Setup</th>
+                  <th rowspan="2">Temp.</th>
+                  <th rowspan="2">Freq.<br>(Hz)</th>
+                  <th colspan="2">Condition</th>
+                  <th rowspan="2">Other Sensors Supported</th>
+                </tr>
+                <tr>
+                  <th>
+                    Vehicle
+                  </th>
+                  <th>
+                    Drone
+                  </th>
+                  <th>
+                    Quad
+                  </th>
+                  <th>
+                    <img src="./static/images/icons/daytime.png" loading="lazy" style="height:25px; vertical-align:middle;" alt="Daytime" />
+                  </th>
+                  <th>
+                    <img src="./static/images/icons/nighttime.png" loading="lazy" style="height:25px; vertical-align:middle;" alt="Nighttime" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>KITTI</td>
+                  <td>CVPR'12</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>14,999</td>
+                  <td>1x64</td>
+                  <td><span style="color: rgb(239,99,75)">No</span></td>
+                  <td>-</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>
+                    <img src="./static/images/icons/camera.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Camera" />
+                    <img src="./static/images/icons/imu.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="IMU" />
+                    <img src="./static/images/icons/stereo.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Stereo" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>ApolloScape</td>
+                  <td>TPAMI'18</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>143,906</td>
+                  <td>1x64</td>
+                  <td><span style="color: rgb(0,128,0)">Yes</span></td>
+                  <td>2</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td>
+                    <img src="./static/images/icons/camera.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Camera" />
+                    <img src="./static/images/icons/imu.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="IMU" />
+                    <img src="./static/images/icons/radar.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Radar" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Waymo Open</td>
+                  <td>CVPR'19</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>198,000</td>
+                  <td>1x64+4x16</td>
+                  <td><span style="color: rgb(0,128,0)">Yes</span></td>
+                  <td>10</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td>
+                    <img src="./static/images/icons/camera.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Camera" />
+                    <img src="./static/images/icons/imu.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="IMU" />
+                    <img src="./static/images/icons/radar.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Radar" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>nuScenes</td>
+                  <td>CVPR'20</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>35,149</td>
+                  <td>1x32</td>
+                  <td><span style="color: rgb(0,128,0)">Yes</span></td>
+                  <td>2</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td>
+                    <img src="./static/images/icons/camera.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Camera" />
+                    <img src="./static/images/icons/imu.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="IMU" />
+                    <img src="./static/images/icons/radar.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Radar" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>ONCE</td>
+                  <td>arXiv'21</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>~1 M</td>
+                  <td>1x40</td>
+                  <td><span style="color: rgb(239,99,75)">No</span></td>
+                  <td>2</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td>
+                    <img src="./static/images/icons/camera.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Camera" />
+                    <img src="./static/images/icons/imu.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="IMU" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Argoverse 2</td>
+                  <td>NeurIPS'21</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>~6 M</td>
+                  <td>2x32</td>
+                  <td><span style="color: rgb(0,128,0)">Yes</span></td>
+                  <td>10</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>
+                    <img src="./static/images/icons/camera.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Camera" />
+                    <img src="./static/images/icons/imu.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="IMU" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>aiMotive</td>
+                  <td>ICLRW'23</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>26,583</td>
+                  <td>1x64</td>
+                  <td><span style="color: rgb(0,128,0)">Yes</span></td>
+                  <td>10</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td>
+                    <img src="./static/images/icons/camera.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Camera" />
+                    <img src="./static/images/icons/imu.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="IMU" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>Zenseact Open</td>
+                  <td>ICCV'23</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>~100 K</td>
+                  <td>1x128+4x16</td>
+                  <td><span style="color: rgb(0,128,0)">Yes</span></td>
+                  <td>1</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td>
+                    <img src="./static/images/icons/camera.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Camera" />
+                    <img src="./static/images/icons/imu.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="IMU" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>MAN TruckScenes</td>
+                  <td>NeurIPS'24</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>~30 K</td>
+                  <td>6x64</td>
+                  <td><span style="color: rgb(0,128,0)">Yes</span></td>
+                  <td>2</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td>
+                    <img src="./static/images/icons/camera.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Camera" />
+                    <img src="./static/images/icons/imu.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="IMU" />
+                    <img src="./static/images/icons/radar.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Radar" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>AeroCollab3D</td>
+                  <td>TGRS'24</td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>3,200</td>
+                  <td>N/A</td>
+                  <td><span style="color: rgb(239,99,75)">No</span></td>
+                  <td>-</td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(239,99,75)">✗</span></td>
+                  <td>
+                    <img src="./static/images/icons/camera.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Camera" />
+                    <img src="./static/images/icons/imu.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="IMU" />
+                  </td>
+                </tr>
+                <tr style="background-color: rgb(225, 251, 245);">
+                  <td><strong>Pi3DET</strong></td>
+                  <td><strong>Ours</strong></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><strong>51,545</strong></td>
+                  <td><strong>1x64</strong></td>
+                  <td><span style="color: rgb(0,128,0)"><strong>Yes</strong></span></td>
+                  <td><strong>10</strong></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td><span style="color: rgb(0,180,139)">✓</span></td>
+                  <td>
+                    <img src="./static/images/icons/camera.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Camera" />
+                    <img src="./static/images/icons/imu.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="IMU" />
+                    <img src="./static/images/icons/stereo.png" loading="lazy" style="height:20px; vertical-align:middle;" alt="Stereo" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>      
+  <hr>
+  <br><br>
+
+
+  <div class="container is-max-desktop"><h2 class="title is-3 has-text-centered">Statistical Analysis</h2>
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class=" column is-full-width has-text-centered">
+        </br>
+        <img src="./static/images/distributions.png" />
+        <div class="content has-text-justified" style="padding-top: 10px">
+          <p>
+            <strong>Figure:</strong> Analysis of perspective differences across three robot platforms. We present the statistics of point elevation distribution (<strong>upper-left</strong>), ego motion distribution (<strong>bottom-left</strong>), and target bounding box distribution (<strong>right</strong>), along with means and variances for each platform's data.
+            We use different colors to denote different platforms for simplicity, i.e., 
+            <img src="./static/images/icons/vehicle.png" style="width:20px; vertical-align: middle;"> <strong>Vehicle</strong>, 
+            <img src="./static/images/icons/drone.png" style="width:21px; vertical-align: middle;"> <strong>Drone</strong>, and 
+            <img src="./static/images/icons/quadruped.png" style="width:21px; vertical-align: middle;"> <strong>Quadruped</strong>. 
+            Best viewed in colors.
+          </p>
+          </div>
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <br><br>
+
+
+  <div class="container is-max-desktop"><h2 class="title is-3 has-text-centered">Dataset Examples</h2>
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class=" column is-full-width has-text-centered">
+
+        </br>
+          <img src="./static/images/example1.png" />
+        <hr>
+
+        </br>
+          <img src="./static/images/example2.png" />
+        <hr>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </section>
+  
+
+
+  <br>
+
+
+
+  <section class="section" id="methodology">
+
+    <div class="container is-max-desktop"><h2 class="title is-2 has-text-centered">Methodology</h2>
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class=" column is-full-width has-text-centered">
+          </br>
+          <img src="./static/images/framework.png" />
+          <div class="content has-text-justified" style="padding-top: 10px">
+            <p>
+              <strong>Framework Overview.</strong> The proposed <strong>Pi3DET-Net</strong> consists of two main stages: 
+              <em>Pre-Adaption (PA)</em> and <em>Knowledge-Adaption (KA)</em>, aiming at bridging the gap across heterogeneous robot platforms through alignment at both geometric (see Section: geometry alignment) and feature levels (see Section: feature alignment). 
+              On the geometric side, PA employs <em>Random Platform Jitter</em> to enhance robustness against ego-motion variations, while KA uses <em>Virtual Platform Pose</em> to simulate source-like viewpoints to achieve bidirectional geometric alignment across platforms. 
+              On the feature side, Pi3DET-Net further incorporates <em>KL Probabilistic Feature Alignment</em> to align target features with the source space, along with a <em>Geometry-Aware Transformation Descriptor</em> to correct global transformations across platforms.
+            </p>            
+          </div>
+          <hr>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="section" id="experiments">
+    <div class="container is-max-desktop"><h2 class="title is-2 has-text-centered">Experiments</h2>
+
+      <div class="columns is-centered has-text-centered">
+        <div class="container is-max-desktop">
+          <h2 class="title is-5">
+            Comparisons of 3D detection methods for vehicle→drone/quadruped tasks
+          </h2>
+          <p>
+            We report the average precision (AP) in “BEV / 3D” at IoU thresholds of 0.7 and 0.5. Symbol ‡ denotes algorithms <em>w.o.</em> ROS. All scores are given in percentage (%). “–” denotes code not available. The <span style="color:red;">Best</span> and <span style="color:blue;">Second Best</span> scores under each metric are highlighted in red and blue, respectively.
+          </p>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-hoverable is-fullwidth">
+              <thead>
+                <tr>
+                  <th rowspan="3">#</th>
+                  <th rowspan="3">Method</th>
+                  <th colspan="4">
+                    <img src="./static/images/icons/vehicle.png" loading="lazy" style="height:25px; vertical-align:middle;" alt="Vehicle" />
+                    Vehicle → 
+                    <img src="./static/images/icons/quadruped.png" loading="lazy" style="height:25px; vertical-align:middle;" alt="Quadruped" />
+                    Quadruped
+                  </th>
+                  <th colspan="4">
+                    <img src="./static/images/icons/vehicle.png" loading="lazy" style="height:25px; vertical-align:middle;" alt="Vehicle" />
+                    Vehicle → 
+                    <img src="./static/images/icons/drone.png" loading="lazy" style="height:25px; vertical-align:middle;" alt="Drone" />
+                    Drone
+                  </th>
+                  <th colspan="2" rowspan="2">Average</th>
+                </tr>
+                <tr>
+                  <th colspan="2" style="text-align:center;">PV-RCNN</th>
+                  <th colspan="2" style="text-align:center;">Voxel RCNN</th>
+                  <th colspan="2" style="text-align:center;">PV-RCNN</th>
+                  <th colspan="2" style="text-align:center;">Voxel RCNN</th>
+                </tr>
+                <tr>
+                  <th>AP@0.7</th><th>AP@0.5</th>
+                  <th>AP@0.7</th><th>AP@0.5</th>
+                  <th>AP@0.7</th><th>AP@0.5</th>
+                  <th>AP@0.7</th><th>AP@0.5</th>
+                  <th>AP@0.7</th><th>AP@0.5</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- nuScenes group -->
+                <tr>
+                  <td rowspan="10" style="writing-mode: vertical-rl; transform: rotate(180deg);">nuScenes</td>
+                  <td style="background-color:#f5f5f5; color:gray;">Source Platform</td>
+                  <td style="background-color:#f5f5f5; color:gray;">43.40 / 33.55</td>
+                  <td style="background-color:#f5f5f5; color:gray;">44.86 / 42.84</td>
+                  <td style="background-color:#f5f5f5; color:gray;">43.25 / 33.74</td>
+                  <td style="background-color:#f5f5f5; color:gray;">45.62 / 43.32</td>
+                  <td style="background-color:#f5f5f5; color:gray;">50.91 / 35.26</td>
+                  <td style="background-color:#f5f5f5; color:gray;">57.73 / 50.24</td>
+                  <td style="background-color:#f5f5f5; color:gray;">50.15 / 29.41</td>
+                  <td style="background-color:#f5f5f5; color:gray;">57.10 / 49.10</td>
+                  <td style="background-color:#f5f5f5; color:gray;">46.93 / 32.99</td>
+                  <td style="background-color:#f5f5f5; color:gray;">51.33 / 46.34</td>
+                </tr>
+                <tr>
+                  <td>ST3D</td>
+                  <td>55.40 / 42.02</td><td>59.59 / 54.75</td>
+                  <td>44.54 / 35.96</td><td>45.81 / 44.38</td>
+                  <td>65.05 / 40.01</td><td>68.93 / 64.09</td>
+                  <td>54.62 / 33.79</td><td>58.45 / 52.89</td>
+                  <td>54.90 / 37.95</td><td>58.20 / 54.03</td>
+                </tr>
+                <tr>
+                  <td>ST3D‡</td>
+                  <td>55.68 / <span style="color:blue; font-weight:bold;">44.50</span></td>
+                  <td>59.32 / 55.32</td>
+                  <td>45.01 / 37.13</td><td>46.73 / 45.45</td>
+                  <td>65.40 / 43.63</td><td><span style="color:blue; font-weight:bold;">69.24</span> / 64.88</td>
+                  <td>55.23 / 36.51</td><td>59.30 / 54.23</td>
+                  <td>55.33 / 40.44</td><td>58.65 / 54.97</td>
+                </tr>
+                <tr>
+                  <td>ST3D++</td>
+                  <td>55.76 / 43.51</td><td>59.93 / 55.28</td>
+                  <td>45.56 / 36.97</td><td>47.28 / 45.84</td>
+                  <td>60.91 / 40.09</td><td>68.96 / 59.96</td>
+                  <td>57.02 / 37.52</td><td>61.30 / 55.43</td>
+                  <td>54.81 / 39.52</td><td>59.37 / 54.13</td>
+                </tr>
+                <tr>
+                  <td>ST3D++‡</td>
+                  <td>54.96 / 40.81</td><td>60.47 / 54.65</td>
+                  <td>45.69 / 36.76</td><td>48.30 / 46.05</td>
+                  <td><span style="color:red; font-weight:bold;">65.50</span> / 43.46</td><td>68.99 / 64.62</td>
+                  <td>55.92 / 39.46</td><td>59.93 / 55.19</td>
+                  <td>55.52 / 40.12</td><td>59.42 / 55.13</td>
+                </tr>
+                <tr>
+                  <td>REDB</td>
+                  <td>52.43 / 41.34</td><td>57.12 / 54.18</td>
+                  <td>– / –</td><td>– / –</td>
+                  <td>65.31 / 39.19</td><td>68.74 / 64.13</td>
+                  <td>– / –</td><td>– / –</td>
+                  <td>– / –</td><td>– / –</td>
+                </tr>
+                <tr>
+                  <td>MS3D++</td>
+                  <td><span style="color:blue; font-weight:bold;">56.24</span> / 43.20</td>
+                  <td><span style="color:blue; font-weight:bold;">60.88</span> / <span style="color:blue; font-weight:bold;">56.13</span></td>
+                  <td><span style="color:blue; font-weight:bold;">51.50</span> / <span style="color:blue; font-weight:bold;">40.14</span></td>
+                  <td><span style="color:blue; font-weight:bold;">56.03</span> / <span style="color:blue; font-weight:bold;">53.86</span></td>
+                  <td><span style="color:blue; font-weight:bold;">66.99</span> / <span style="color:blue; font-weight:bold;">43.76</span></td>
+                  <td><span style="color:red; font-weight:bold;">69.87</span> / <span style="color:blue; font-weight:bold;">65.85</span></td>
+                  <td><span style="color:blue; font-weight:bold;">62.68</span> / <span style="color:blue; font-weight:bold;">38.26</span></td>
+                  <td><span style="color:blue; font-weight:bold;">68.34</span> / <span style="color:blue; font-weight:bold;">61.09</span></td>
+                  <td><span style="color:blue; font-weight:bold;">59.35</span> / <span style="color:blue; font-weight:bold;">41.34</span></td>
+                  <td><span style="color:blue; font-weight:bold;">63.78</span> / <span style="color:blue; font-weight:bold;">59.23</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Pi3DET‑Net</strong></td>
+                  <td><span style="color:red; font-weight:bold;">56.80</span> / <span style="color:red; font-weight:bold;">46.36</span></td>
+                  <td><span style="color:red; font-weight:bold;">61.54</span> / <span style="color:red; font-weight:bold;">57.20</span></td>
+                  <td><span style="color:red; font-weight:bold;">54.85</span> / <span style="color:red; font-weight:bold;">42.38</span></td>
+                  <td><span style="color:red; font-weight:bold;">57.41</span> / <span style="color:red; font-weight:bold;">55.54</span></td>
+                  <td>65.43 / <span style="color:red; font-weight:bold;">45.94</span></td>
+                  <td><span style="color:blue; font-weight:bold;">69.24</span> / <span style="color:red; font-weight:bold;">65.87</span></td>
+                  <td><span style="color:red; font-weight:bold;">65.63</span> / <span style="color:red; font-weight:bold;">44.62</span></td>
+                  <td><span style="color:red; font-weight:bold;">72.05</span> / <span style="color:red; font-weight:bold;">63.83</span></td>
+                  <td><span style="color:red; font-weight:bold;">60.68</span> / <span style="color:red; font-weight:bold;">44.83</span></td>
+                  <td><span style="color:red; font-weight:bold;">65.06</span> / <span style="color:red; font-weight:bold;">60.61</span></td>
+                </tr>
+                <tr>
+                  <td>Target Platform</td>
+                  <td>54.15 / 40.24</td><td>58.63 / 54.96</td>
+                  <td>54.90 / 39.74</td><td>56.46 / 55.19</td>
+                  <td>67.67 / 46.11</td><td>70.04 / 66.14</td>
+                  <td>68.52 / 46.53</td><td>70.67 / 61.42</td>
+                  <td>61.31 / 43.16</td><td>63.95 / 59.43</td>
+                </tr>
+      
+                <!-- Pi3DET (Vehicle) group -->
+                <tr><td colspan="12" style="height:1px;padding:0;background:#ddd;"></td></tr>
+                <tr>
+                  <td rowspan="10" style="writing-mode: vertical-rl; transform: rotate(180deg);">Pi3DET (Vehicle)</td>
+                  <td style="background-color:#f5f5f5; color:gray;">Source Platform</td>
+                  <td style="background-color:#f5f5f5; color:gray;">38.61 / 26.84</td>
+                  <td style="background-color:#f5f5f5; color:gray;">40.64 / 39.22</td>
+                  <td style="background-color:#f5f5f5; color:gray;">43.95 / 31.24</td>
+                  <td style="background-color:#f5f5f5; color:gray;">48.22 / 44.17</td>
+                  <td style="background-color:#f5f5f5; color:gray;">57.29 / 36.62</td>
+                  <td style="background-color:#f5f5f5; color:gray;">58.92 / 56.19</td>
+                  <td style="background-color:#f5f5f5; color:gray;">52.85 / 37.96</td>
+                  <td style="background-color:#f5f5f5; color:gray;">61.10 / 52.47</td>
+                  <td>48.17 / 33.16</td><td>52.22 / 48.01</td>
+                </tr>
+                <tr>
+                  <td>ST3D</td>
+                  <td>49.29 / 38.69</td><td>51.02 / 49.71</td>
+                  <td>47.70 / 37.91</td><td>48.07 / 47.59</td>
+                  <td>60.17 / 33.01</td><td>62.84 / 54.51</td>
+                  <td>53.79 / 40.18</td><td><span style="color:blue; font-weight:bold;">65.29</span> / 53.40</td>
+                  <td>52.74 / 37.45</td><td>56.81 / 51.30</td>
+                </tr>
+                <tr>
+                  <td>ST3D‡</td>
+                  <td>47.89 / 38.07</td><td>49.50 / 48.23</td>
+                  <td>47.01 / 41.85</td><td>54.01 / 53.46</td>
+                  <td>60.67 / 33.27</td><td>62.98 / 54.61</td>
+                  <td>53.85 / 40.02</td><td>62.70 / 53.08</td>
+                  <td>52.35 / 38.30</td><td>57.30 / 52.34</td>
+                </tr>
+                <tr>
+                  <td>ST3D++</td>
+                  <td>46.05 / 37.22</td><td>49.33 / 47.84</td>
+                  <td>48.52 / 37.84</td><td><span style="color:blue; font-weight:bold;">55.82</span> / 48.53</td>
+                  <td>60.04 / 33.98</td><td>62.71 / 54.13</td>
+                  <td>53.71 / 39.94</td><td>62.43 / 53.20</td>
+                  <td>52.08 / 37.24</td><td>57.57 / 50.92</td>
+                </tr>
+                <tr>
+                  <td>ST3D++‡</td>
+                  <td>45.14 / 35.70</td><td>46.94 / 45.37</td>
+                  <td>47.52 / 37.13</td><td>54.37 / 47.63</td>
+                  <td>64.15 / 34.20</td><td>63.81 / 55.44</td>
+                  <td>53.64 / 40.27</td><td>62.43 / 53.10</td>
+                  <td>52.61 / 36.83</td><td>56.89 / 50.38</td>
+                </tr>
+                <tr>
+                  <td>REDB</td>
+                  <td>46.74 / 38.47</td><td>50.29 / 49.54</td>
+                  <td>– / –</td><td>– / –</td>
+                  <td>61.57 / 34.05</td><td>63.22 / 54.07</td>
+                  <td>– / –</td><td>– / –</td>
+                  <td>– / –</td><td>– / –</td>
+                </tr>
+                <tr>
+                  <td>MS3D++</td>
+                  <td><span style="color:blue; font-weight:bold;">53.66</span> / <span style="color:blue; font-weight:bold;">40.66</span></td>
+                  <td><span style="color:blue; font-weight:bold;">55.21</span> / <span style="color:blue; font-weight:bold;">53.78</span></td>
+                  <td><span style="color:blue; font-weight:bold;">53.65</span> / <span style="color:blue; font-weight:bold;">41.93</span></td>
+                  <td>54.69 / <span style="color:blue; font-weight:bold;">54.00</span></td>
+                  <td><span style="color:blue; font-weight:bold;">66.05</span> / <span style="color:blue; font-weight:bold;">41.17</span></td>
+                  <td><span style="color:blue; font-weight:bold;">67.80</span> / <span style="color:blue; font-weight:bold;">63.26</span></td>
+                  <td><span style="color:blue; font-weight:bold;">53.85</span> / <span style="color:blue; font-weight:bold;">40.91</span></td>
+                  <td>62.87 / <span style="color:blue; font-weight:bold;">53.44</span></td>
+                  <td><span style="color:blue; font-weight:bold;">56.80</span> / <span style="color:blue; font-weight:bold;">41.17</span></td>
+                  <td><span style="color:blue; font-weight:bold;">60.14</span> / <span style="color:blue; font-weight:bold;">56.12</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Pi3DET‑Net</strong></td>
+                  <td><span style="color:red; font-weight:bold;">56.19</span> / <span style="color:red; font-weight:bold;">44.28</span></td>
+                  <td><span style="color:red; font-weight:bold;">60.35</span> / <span style="color:red; font-weight:bold;">56.20</span></td>
+                  <td><span style="color:red; font-weight:bold;">55.54</span> / <span style="color:red; font-weight:bold;">45.18</span></td>
+                  <td><span style="color:red; font-weight:bold;">59.48</span> / <span style="color:red; font-weight:bold;">58.90</span></td>
+                  <td><span style="color:red; font-weight:bold;">66.26</span> / <span style="color:red; font-weight:bold;">44.47</span></td>
+                  <td><span style="color:red; font-weight:bold;">68.25</span> / <span style="color:red; font-weight:bold;">63.36</span></td>
+                  <td><span style="color:red; font-weight:bold;">67.87</span> / <span style="color:red; font-weight:bold;">46.83</span></td>
+                  <td><span style="color:red; font-weight:bold;">69.95</span> / <span style="color:red; font-weight:bold;">66.26</span></td>
+                  <td><span style="color:red; font-weight:bold;">61.47</span> / <span style="color:red; font-weight:bold;">45.19</span></td>
+                  <td><span style="color:red; font-weight:bold;">64.51</span> / <span style="color:red; font-weight:bold;">61.18</span></td>
+                </tr>
+                <tr>
+                  <td>Target Platform</td>
+                  <td>54.15 / 40.24</td><td>58.63 / 54.96</td>
+                  <td>54.90 / 39.74</td><td>56.46 / 55.19</td>
+                  <td>67.67 / 46.11</td><td>70.04 / 66.14</td>
+                  <td>68.52 / 46.53</td><td>70.67 / 61.42</td>
+                  <td>61.31 / 43.16</td><td>63.95 / 59.43</td>
+                </tr>
+      
+                <!-- Combined All row -->
+                <tr>
+                  <td><strong>Combined All</strong></td>
+                  <td>58.21 / 46.27</td><td>62.18 / 59.67</td>
+                  <td>60.96 / 48.15</td><td>63.04 / 61.04</td>
+                  <td>68.44 / 48.19</td><td>71.11 / 68.24</td>
+                  <td>68.90 / 48.88</td><td>72.55 / 69.18</td>
+                  <td>64.13 / 47.87</td><td>67.22 / 64.53</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+
+
+      
+      <!-- <div class="columns is-centered has-text-centered">
+        <div class="container is-max-desktop">
+          <h2 class="title is-5">
+            Cross-platform 3D detection benchmark
+          </h2>
+          <p>
+            We report the average precision (AP) in “BEV / 3D” at the IoU threshold of 0.7. All scores are given in percentage (%). “-C” and “-A” denote detectors with the Anchor-based or Center-based detection head.
+          </p>
+          <div class="table-container">
+            <table class="table is-bordered is-striped is-hoverable">
+              <thead>
+                <tr>
+                  <th rowspan="2">#</th>
+                  <th rowspan="2">Method</th>
+                  <th>Vehicle</th>
+                  <th>Quadruped</th>
+                  <th>Drone</th>
+                  <th rowspan="2">Average</th>
+                </tr>
+                <tr>
+                  <th>AP@0.7</th>
+                  <th>AP@0.7</th>
+                  <th>AP@0.7</th>
+                </tr>
+              </thead>
+              <tbody>
+
+                <tr>
+                  <td rowspan="9" style="writing-mode: vertical-rl; transform: rotate(180deg);">Grid</td>
+                  <td>PointPillar</td>
+                  <td>51.85 / 44.34</td>
+                  <td>36.24 / 14.51</td>
+                  <td>49.53 / 27.02</td>
+                  <td>45.87 / 28.62</td>
+                </tr>
+                <tr>
+                  <td>SECOND-IOU</td>
+                  <td>50.99 / 38.99</td>
+                  <td>38.01 / 18.11</td>
+                  <td>56.25 / 34.11</td>
+                  <td>48.42 / 30.40</td>
+                </tr>
+                <tr>
+                  <td>CenterPoint</td>
+                  <td>51.90 / 42.12</td>
+                  <td>37.74 / 14.68</td>
+                  <td>53.14 / 29.29</td>
+                  <td>47.59 / 28.70</td>
+                </tr>
+                <tr>
+                  <td>PillarNet</td>
+                  <td>50.18 / 38.02</td>
+                  <td>34.14 / 12.06</td>
+                  <td>47.59 / 24.00</td>
+                  <td>43.97 / 24.69</td>
+                </tr>
+                <tr>
+                  <td>Part A*</td>
+                  <td><span style="color:red;">54.88</span> / <span style="color:red;">48.23</span></td>
+                  <td><span style="color:red;">45.47</span> / <span style="color:blue;">20.10</span></td>
+                  <td><span style="color:blue;">56.72</span> / <span style="color:blue;">34.44</span></td>
+                  <td><span style="color:blue;">52.36</span> / <span style="color:blue;">34.26</span></td>
+                </tr>
+                <tr>
+                  <td>Transfusion-L</td>
+                  <td>49.27 / 38.21</td>
+                  <td>36.29 / 14.43</td>
+                  <td>51.27 / 24.63</td>
+                  <td>45.61 / 25.76</td>
+                </tr>
+                <tr>
+                  <td>HEDNet</td>
+                  <td>46.73 / 37.60</td>
+                  <td>34.30 / 14.51</td>
+                  <td>49.31 / 20.89</td>
+                  <td>43.45 / 24.33</td>
+                </tr>
+                <tr>
+                  <td>SAFNet</td>
+                  <td>42.60 / 34.88</td>
+                  <td>33.47 / 13.65</td>
+                  <td>49.93 / 24.70</td>
+                  <td>42.00 / 24.41</td>
+                </tr>
+                <tr>
+                  <td><strong>Part A* + Ours</strong></td>
+                  <td><span style="color:blue;">53.81</span> / <span style="color:blue;">47.56</span></td>
+                  <td><span style="color:blue;">44.31</span> / <span style="color:red;">23.73</span></td>
+                  <td><span style="color:red;">59.53</span> / <span style="color:red;">38.31</span></td>
+                  <td><span style="color:red;">52.55</span> / <span style="color:red;">36.53</span></td>
+                </tr>
+      
+                <tr><td colspan="6" style="height:1px;padding:0;background:#ddd;"></td></tr>
+      
+                <tr>
+                  <td rowspan="5" style="writing-mode: vertical-rl; transform: rotate(180deg);">Point</td>
+                  <td>PointRCNN</td>
+                  <td><span style="color:blue;">49.38</span> / <span style="color:blue;">43.03</span></td>
+                  <td>41.35 / 23.69</td>
+                  <td>52.59 / <span style="color:blue;">38.67</span></td>
+                  <td>47.77 / <span style="color:blue;">35.13</span></td>
+                </tr>
+                <tr>
+                  <td>3DSSD</td>
+                  <td>46.58 / 39.88</td>
+                  <td>42.47 / 23.89</td>
+                  <td>51.54 / 37.78</td>
+                  <td>46.86 / 33.85</td>
+                </tr>
+                <tr>
+                  <td>IA-SSD</td>
+                  <td>44.00 / 34.91</td>
+                  <td><span style="color:red;">48.11</span> / <span style="color:blue;">24.89</span></td>
+                  <td><span style="color:red;">59.69</span> / 35.79</td>
+                  <td><span style="color:red;">50.60</span> / 31.86</td>
+                </tr>
+                <tr>
+                  <td>DBQ-SSD</td>
+                  <td>41.28 / 33.19</td>
+                  <td><span style="color:blue;">44.27</span> / 21.85</td>
+                  <td>54.65 / 32.08</td>
+                  <td>46.73 / 29.04</td>
+                </tr>
+                <tr>
+                  <td><strong>PointRCNN + Ours</strong></td>
+                  <td><span style="color:red;">51.19</span> / <span style="color:red;">48.09</span></td>
+                  <td>42.18 / <span style="color:red;">26.07</span></td>
+                  <td><span style="color:blue;">57.54</span> / <span style="color:red;">41.70</span></td>
+                  <td><span style="color:blue;">50.30</span> / <span style="color:red;">38.62</span></td>
+                </tr>
+      
+                <tr><td colspan="6" style="height:1px;padding:0;background:#ddd;"></td></tr>
+      
+                <tr>
+                  <td rowspan="7" style="writing-mode: vertical-rl; transform: rotate(180deg);">Grid-Point</td>
+                  <td>PV-RCNN</td>
+                  <td>63.32 / 56.58</td>
+                  <td>45.22 / 22.94</td>
+                  <td>60.11 / 39.68</td>
+                  <td>56.22 / 39.73</td>
+                </tr>
+                <tr>
+                  <td>PV-RCNN-C</td>
+                  <td>52.18 / 50.84</td>
+                  <td>40.82 / 20.69</td>
+                  <td>52.86 / 39.52</td>
+                  <td>48.62 / 37.02</td>
+                </tr>
+                <tr>
+                  <td>PV-RCNN++</td>
+                  <td><span style="color:red;">64.05</span> / <span style="color:red;">57.01</span></td>
+                  <td>47.54 / 22.35</td>
+                  <td>60.54 / 40.10</td>
+                  <td>57.38 / 39.82</td>
+                </tr>
+                <tr>
+                  <td>PV-RCNN++-C</td>
+                  <td>57.94 / 50.56</td>
+                  <td>40.75 / 20.78</td>
+                  <td>53.46 / 40.00</td>
+                  <td>50.72 / 37.11</td>
+                </tr>
+                <tr>
+                  <td>VoxelRCNN-A</td>
+                  <td>63.00 / <span style="color:blue;">56.98</span></td>
+                  <td>46.78 / <span style="color:blue;">23.30</span></td>
+                  <td><span style="color:blue;">64.46</span> / <span style="color:blue;">42.76</span></td>
+                  <td><span style="color:blue;">58.08</span> / <span style="color:blue;">41.01</span></td>
+                </tr>
+                <tr>
+                  <td>VoxelRCNN</td>
+                  <td>58.39 / 51.11</td>
+                  <td><span style="color:blue;">48.30</span> / 21.61</td>
+                  <td>60.29 / 39.15</td>
+                  <td>55.66 / 37.29</td>
+                </tr>
+                <tr>
+                  <td><strong>PV-RCNN++ + Ours</strong></td>
+                  <td><span style="color:blue;">63.47</span> / 56.60</td>
+                  <td><span style="color:red;">57.08</span> / <span style="color:red;">31.09</span></td>
+                  <td><span style="color:red;">68.52</span> / <span style="color:red;">47.92</span></td>
+                  <td><span style="color:red;">63.02</span> / <span style="color:red;">45.20</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div> -->
+      
+
+    <br/><hr>
+  </section>
+
+
+
+
+  <section class="section" id="citation">
+    <div class="container is-max-desktop"><h2 class="title is-2 has-text-centered">Citation</h2>
+<pre style="border-radius: 10px;"><code>@inproceedings{liang2025pi3det,
+  title     = {Perspective-Invariant 3D Object Detection},
+  author    = {Ao Liang and Lingdong Kong and Dongyue Lu and Youquan Liu and Jian Fang and Huaici Zhao and Wei Tsang Ooi},
+  booktitle = {Proceedings of the IEEE/CVF International Conference on Computer Vision},
+  year      = {2025},
+}</code></pre>
+    <br/><hr>
+  </section>
+
+
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This Website is under <a rel="license"
+                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+                Commons Attribution-ShareAlike 4.0 International</a> License.
+            </p>
+            <p>
+              Copyright © <strong>Pi3DET</strong> 2025 All Rights Reserved.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+
+
+
+
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const lazyVideos = document.querySelectorAll("video.lazy-video");
+  
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries, obs) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const video = entry.target;
+              const src = video.getAttribute("data-src");
+              if (src) {
+                video.src = src;
+                video.load();
+                video.classList.remove("lazy-video");
+                obs.unobserve(video);
+              }
+            }
+          });
+        });
+  
+        lazyVideos.forEach(video => observer.observe(video));
+      } else {
+        // Fallback: load all immediately if IntersectionObserver not supported
+        lazyVideos.forEach(video => {
+          const src = video.getAttribute("data-src");
+          if (src) {
+            video.src = src;
+            video.load();
+            video.classList.remove("lazy-video");
+          }
+        });
+      }
+    });
+  </script>
+  
+
+</body>
+
+</html>
